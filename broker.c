@@ -13,11 +13,11 @@
 #include <unistd.h>
 #include <dirent.h>
 
-/** Para usar o mkfifo() **/
+/** To use mkfifo() **/
 #include <sys/stat.h>
-/** Para usar o open e conseguir abrir o pipe **/
+/** To use open and be able to open the pipe **/
 #include <fcntl.h>
-/** Para usar threads **/
+/** To use threads **/
 #include <pthread.h>
 
 void sendConnack(int connfd) {
@@ -306,37 +306,37 @@ int main (int argc, char **argv) {
             exit(5);
         }
       
-        /* Agora o servidor precisa tratar este cliente de forma
-         * separada. Para isto é criado um processo filho usando a
-         * função fork. O processo vai ser uma cópia deste. Depois da
-         * função fork, os dois processos (pai e filho) estarão no mesmo
-         * ponto do código, mas cada um terá um PID diferente. Assim é
-         * possível diferenciar o que cada processo terá que fazer. O
-         * filho tem que processar a requisição do cliente. O pai tem
-         * que voltar no loop para continuar aceitando novas conexões.
-         * Se o retorno da função fork for zero, é porque está no
-         * processo filho. */
+        /* Now the server needs to handle this client properly
+         * separated. For this, a child process is created using the
+         * fork function. The process will be a copy of this. After
+         * fork function, both processes (parent and child) will be in the same
+         * code point, but each will have a different PID. so it is
+         * possible to differentiate what each process will have to do. O
+         * child has to process client request. the father has
+         * that go back in the loop to continue accepting new connections.
+         * If the return of the fork function is zero, it is because it is in the
+         * child process. */
         if ( (childpid = fork()) == 0) {
             /**** PROCESSO FILHO ****/
-            printf("[Uma conexão aberta]\n");
-            /* Já que está no processo filho, não precisa mais do socket
-             * listenfd. Só o processo pai precisa deste socket. */
+            printf("[an open connection]\n");
+            /* Since it's in the child process, it doesn't need the socket anymore
+             * listenfd. Only the parent process needs this socket. */
             close(listenfd);
          
-            /* Agora pode ler do socket e escrever no socket. Isto tem
-             * que ser feito em sincronia com o cliente. Não faz sentido
-             * ler sem ter o que ler. Ou seja, neste caso está sendo
-             * considerado que o cliente vai enviar algo para o servidor.
-             * O servidor vai processar o que tiver sido enviado e vai
-             * enviar uma resposta para o cliente (Que precisará estar
-             * esperando por esta resposta) 
+            /* Now you can read from the socket and write to the socket. This has
+             * to be done in sync with the client. Does not make sense
+             * read without having to read. That is, in this case it is being
+             * assuming the client is going to send something to the server.
+             * The server will process what has been sent and will
+             * send a response to the customer (which will need to be
+             *waiting for this answer)
              */
 
-            /* ========================================================= */
-            /* ========================================================= */
-            /*                         EP1 INÍCIO                        */
-            /* ========================================================= */
-            /* ========================================================= */
+            /* =================================================== ========= */
+            /* =================================================== ========= */
+            /* EP1 HOME */
+            /* =================================================== ========= */
+            /* =================================================== ========= */
             while((n = read(connfd, recvline, MAXLINE)) > 0) {
                 enum operations currentOperation = (recvline[0] & 0xf0);
                 
@@ -366,14 +366,14 @@ int main (int argc, char **argv) {
                 }
             }
 
-            /* ========================================================= */
-            /* ========================================================= */
-            /*                         EP1 FIM                           */
-            /* ========================================================= */
-            /* ========================================================= */
+            /* =================================================== ========= */
+            /* =================================================== ========= */
+            /* EP1 END */
+            /* =================================================== ========= */
+            /* =================================================== ========= */
 
-            /* Após ter feito toda a troca de informação com o cliente,
-             * pode finalizar o processo filho */
+            /* After having done all the information exchange with the client,
+             * can terminate child process */
             printf("[Uma conexão fechada]\n");
             exit(0);
         }
